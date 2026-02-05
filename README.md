@@ -27,7 +27,6 @@ A Flutter-based **Food Delivery App UI** showcasing modern design patterns like 
 ![](assets/screenshots/home_page.png)
 
 
-*(Replace these images with your actual screenshots)*
 
 ---
 
