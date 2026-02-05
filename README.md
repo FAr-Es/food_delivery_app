@@ -1,16 +1,40 @@
-# food_app_ui
+# Food Delivery App 🍔
 
-A new Flutter project.
+A Flutter-based **Food Delivery App UI** showcasing modern design patterns like carousels, product grids, and a stylish bottom navigation bar. Perfect for learning UI/UX in Flutter or showcasing your portfolio.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 📱 Features
 
-A few resources to get you started if this is your first Flutter project:
+- **Search Bar** with rounded design
+- **Carousel Slider** for promotional banners with captions
+- **Gradient / Stylish Divider** separating sections
+- **Featured Items Grid** with:
+  - Rounded cards
+  - Shadows
+  - Images, titles, descriptions
+  - Add to Cart buttons
+- **Custom Bottom Navigation Bar** with:
+  - Height control
+  - Selected & unselected colors
+  - Rounded design
+- Fully responsive and mobile-friendly
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🖼 Screenshots
+
+![](assets/screenshots/home_page.png)
+
+
+*(Replace these images with your actual screenshots)*
+
+---
+
+## ⚙ Installation
+
+1. Make sure you have [Flutter installed](https://flutter.dev/docs/get-started/install).  
+2. Clone the repository:
+
+```bash
+git clone https://github.com/your-username/food_delivery_app.git
