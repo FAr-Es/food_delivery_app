@@ -1,7 +1,6 @@
 # Food Delivery App 🍔
 
-A Flutter-based **Food Delivery App UI** showcasing modern design patterns like carousels, product grids, and a stylish bottom navigation bar. Perfect for learning UI/UX in Flutter or showcasing your portfolio.
-
+A simple Flutter-based **Food Delivery App UI** showcasing modern design patterns like carousels, product grids, and a stylish bottom navigation bar.
 ---
 
 ## 📱 Features
