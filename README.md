@@ -38,4 +38,4 @@ A simple Flutter-based **Food Delivery App UI** showcasing modern design pattern
 2. Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/food_delivery_app.git
+git clone https://github.com/FAr-Es/food_delivery_app.git
