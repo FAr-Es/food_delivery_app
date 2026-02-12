@@ -117,7 +117,6 @@ class _CartScreenState extends State<CartScreen> {
           IconButton(
             icon: const Icon(Icons.remove_circle_outline),
             onPressed: () {
-              if (product.quantity == 1) return;
               setState(() {
                 product.quantity--;
               });
