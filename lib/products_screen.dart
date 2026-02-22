@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:food_app_ui/blocs/cart/cart_cubit.dart';
 import 'products_model.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'product_details_screen.dart';
+import 'blocs/view/view_cubit.dart';
 
 class HomeContent extends StatefulWidget {
   const HomeContent({super.key});
@@ -11,8 +14,6 @@ class HomeContent extends StatefulWidget {
 }
 
 class _HomeContentState extends State<HomeContent> {
-  bool isListSelected = false;
-
   @override
   Widget build(BuildContext context) {
     final List captions = [
@@ -98,61 +99,69 @@ class _HomeContentState extends State<HomeContent> {
                 children: [
                   // List View Button
                   Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          isListSelected = true;
-                        });
-                      },
-                      child: AnimatedContainer(
-                        duration: Duration(milliseconds: 300),
-                        curve: Curves.easeInOut,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: isListSelected
-                              ? Colors.red
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        child: Text(
-                          "List View",
-                          style: TextStyle(
-                            color: isListSelected ? Colors.white : Colors.red,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
+                    child: BlocBuilder<ViewCubit, bool>(
+                      builder: (context, isListSelected) {
+                        return GestureDetector(
+                          onTap: () {
+                            context.read<ViewCubit>().toggleView(true);
+                          },
+                          child: AnimatedContainer(
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: isListSelected
+                                  ? Colors.red
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            child: Text(
+                              "List View",
+                              style: TextStyle(
+                                color: isListSelected
+                                    ? Colors.white
+                                    : Colors.red,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
+                        );
+                      },
                     ),
                   ),
 
                   // Grid View Button
                   Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          isListSelected = false;
-                        });
-                      },
-                      child: AnimatedContainer(
-                        duration: Duration(milliseconds: 300),
-                        curve: Curves.easeInOut,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: !isListSelected
-                              ? Colors.red
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        child: Text(
-                          "Grid View",
-                          style: TextStyle(
-                            color: !isListSelected ? Colors.white : Colors.red,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
+                    child: BlocBuilder<ViewCubit, bool>(
+                      builder: (context, isListSelected) {
+                        return GestureDetector(
+                          onTap: () {
+                            context.read<ViewCubit>().toggleView(false);
+                          },
+                          child: AnimatedContainer(
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: !isListSelected
+                                  ? Colors.red
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            child: Text(
+                              "Grid View",
+                              style: TextStyle(
+                                color: !isListSelected
+                                    ? Colors.white
+                                    : Colors.red,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
+                        );
+                      },
                     ),
                   ),
                 ],
@@ -171,63 +180,64 @@ class _HomeContentState extends State<HomeContent> {
               ],
             ),
             SizedBox(height: 30),
-            if (!isListSelected)
-              // Grid view
-              Expanded(
-                child: GridView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 16,
-                    crossAxisSpacing: 16,
-                    childAspectRatio: 0.7,
-                  ),
-                  itemCount: ProductsModel.productItems.length,
-                  itemBuilder: (context, index) {
-                    final item = ProductsModel.productItems[index];
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ProductDetailsScreen(
-                              product: ProductsModel.productItems[index],
-                            ),
-                          ),
-                        );
-                      },
-                      child: _buildProductGridView(item),
-                    );
-                  },
-                ),
-              ),
 
-            if (isListSelected)
-              // List view
-              Expanded(
-                child: ListView.builder(
-                  itemCount: ProductsModel.productItems.length,
-                  itemBuilder: (context, index) {
-                    final item = ProductsModel.productItems[index];
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ProductDetailsScreen(
-                              product: ProductsModel.productItems[index],
-                            ),
+            Expanded(
+              child: BlocBuilder<ViewCubit, bool>(
+                builder: (context, isListSelected) {
+                  if (!isListSelected) {
+                    return GridView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 16,
+                        crossAxisSpacing: 16,
+                        childAspectRatio: 0.7,
+                      ),
+                      itemCount: ProductsModel.productItems.length,
+                      itemBuilder: (context, index) {
+                        final item = ProductsModel.productItems[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ProductDetailsScreen(
+                                  product: ProductsModel.productItems[index],
+                                ),
+                              ),
+                            );
+                          },
+                          child: _buildProductGridView(item),
+                        );
+                      },
+                    );
+                  } else {
+                    return ListView.builder(
+                      itemCount: ProductsModel.productItems.length,
+                      itemBuilder: (context, index) {
+                        final item = ProductsModel.productItems[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ProductDetailsScreen(
+                                  product: ProductsModel.productItems[index],
+                                ),
+                              ),
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 15),
+                            child: _buildProductListView(item),
                           ),
                         );
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 15),
-                        child: _buildProductListView(item),
-                      ),
                     );
-                  },
-                ),
+                  }
+                },
               ),
+            ),
           ],
         ),
       ),
@@ -268,9 +278,7 @@ class _HomeContentState extends State<HomeContent> {
 
         trailing: TextButton(
           onPressed: () {
-            setState(() {
-              item.quantity++;
-            });
+            context.read<CartCubit>().addItem(item);
           },
           style: TextButton.styleFrom(
             backgroundColor: Color.fromARGB(255, 252, 237, 238),
@@ -328,7 +336,7 @@ class _HomeContentState extends State<HomeContent> {
           ),
 
           Padding(
-            padding: const EdgeInsets.only(left: 15,right: 15),
+            padding: const EdgeInsets.only(left: 15, right: 15),
             child: Text(
               item.desc,
               maxLines: 1,
@@ -340,9 +348,7 @@ class _HomeContentState extends State<HomeContent> {
           // button
           TextButton(
             onPressed: () {
-              setState(() {
-                item.quantity++;
-              });
+              context.read<CartCubit>().addItem(item);
             },
             style: TextButton.styleFrom(
               backgroundColor: Color.fromARGB(255, 252, 237, 238),

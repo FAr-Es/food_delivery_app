@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:food_app_ui/blocs/cart/cart_cubit.dart';
 import 'products_model.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
@@ -13,9 +15,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-      ),
+      appBar: AppBar(backgroundColor: Colors.transparent),
       body: SingleChildScrollView(
         child: Container(
           color: Color.fromARGB(255, 250, 250, 250),
@@ -108,9 +108,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     padding: const EdgeInsets.only(bottom: 20),
                     child: TextButton(
                       onPressed: () {
-                        setState(() {
-                          widget.product.quantity++;
-                        });
+                        context.read<CartCubit>().addItem(widget.product);
                       },
                       style: TextButton.styleFrom(
                         backgroundColor: Colors.red,

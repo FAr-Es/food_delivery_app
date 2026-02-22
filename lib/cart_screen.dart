@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:food_app_ui/blocs/cart/cart_cubit.dart';
 import 'products_model.dart';
 
 class CartScreen extends StatefulWidget {
@@ -9,85 +11,83 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
-  double get subtotal {
-    double total = 0;
-    for (var product in ProductsModel.productItems) {
-      total += product.price * product.quantity;
-    }
-    return total;
-  }
-
-  double get taxes => subtotal * 0.1;
-  double get deliveryFee => subtotal == 0 ? 0 : 5.0;
-  double get total => subtotal + taxes + deliveryFee;
-
   @override
   Widget build(BuildContext context) {
-    final cartItems = ProductsModel.productItems
-        .where((product) => product.quantity > 0)
-        .toList();
+    return BlocBuilder<CartCubit, List<ProductsModel>>(
+      builder: (context, state) {
+        double subtotal = state.fold(0, (sum, p) => sum + p.price * p.quantity);
+        double taxes = subtotal * 0.1;
+        double deliveryFee = subtotal == 0 ? 0 : 5.0;
+        double total = subtotal + taxes + deliveryFee;
+        final cartItems = state
+            .where((product) => product.quantity > 0)
+            .toList();
+        return Scaffold(
+          backgroundColor: const Color.fromARGB(255, 250, 250, 250),
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                children: [
+                  const SizedBox(height: 20),
 
-    return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
-
-              const Text(
-                "Cart",
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-              ),
-
-              const SizedBox(height: 20),
-              Expanded(
-                child: cartItems.isEmpty
-                    ? const Center(
-                        child: Text(
-                          "Your cart is empty",
-                          style: TextStyle(fontSize: 18),
-                        ),
-                      )
-                    : ListView.builder(
-                        itemCount: cartItems.length,
-                        itemBuilder: (context, index) {
-                          return _buildItem(cartItems[index]);
-                        },
-                      ),
-              ),
-
-              Divider(thickness: 1),
-
-              _buildPriceRow("Subtotal:", subtotal),
-              _buildPriceRow("Delivery Fee:", deliveryFee),
-              _buildPriceRow("Taxes (10%):", taxes),
-
-              Divider(thickness: 1),
-
-              _buildPriceRow("Total:", total, isBold: true),
-
-              SizedBox(height: 20),
-              TextButton(
-                onPressed: () {},
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  padding: EdgeInsets.symmetric(horizontal: 100, vertical: 13),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
+                  const Text(
+                    "Cart",
+                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                   ),
-                ),
-                child: Text(
-                  "Check Out",
-                  style: TextStyle(fontSize: 18, color: Colors.white),
-                ),
+
+                  const SizedBox(height: 20),
+                  Expanded(
+                    child: cartItems.isEmpty
+                        ? const Center(
+                            child: Text(
+                              "Your cart is empty",
+                              style: TextStyle(fontSize: 18),
+                            ),
+                          )
+                        : ListView.builder(
+                            itemCount: cartItems.length,
+                            itemBuilder: (context, index) {
+                              return _buildItem(cartItems[index]);
+                            },
+                          ),
+                  ),
+
+                  Divider(thickness: 1),
+
+                  _buildPriceRow("Subtotal:", subtotal),
+                  _buildPriceRow("Delivery Fee:", deliveryFee),
+                  _buildPriceRow("Taxes (10%):", taxes),
+
+                  Divider(thickness: 1),
+
+                  _buildPriceRow("Total:", total, isBold: true),
+
+                  SizedBox(height: 20),
+                  TextButton(
+                    onPressed: () {},
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 100,
+                        vertical: 13,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                    child: Text(
+                      "Check Out",
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                ],
               ),
-              SizedBox(height:20),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -117,9 +117,7 @@ class _CartScreenState extends State<CartScreen> {
           IconButton(
             icon: const Icon(Icons.remove_circle_outline),
             onPressed: () {
-              setState(() {
-                product.quantity--;
-              });
+              context.read<CartCubit>().decrement(product);
             },
           ),
           Text(
@@ -129,9 +127,7 @@ class _CartScreenState extends State<CartScreen> {
           IconButton(
             icon: const Icon(Icons.add_circle_outline),
             onPressed: () {
-              setState(() {
-                product.quantity++;
-              });
+              context.read<CartCubit>().addItem(product);
             },
           ),
         ],
