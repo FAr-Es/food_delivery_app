@@ -5,6 +5,9 @@ class CartCubit extends Cubit<List<ProductsModel>> {
   CartCubit() : super([]);
 
   void addItem(ProductsModel product) {
+    if (!state.contains(product)) {
+      state.add(product); 
+    }
     product.quantity++;
     emit(List.of(state));
   }
